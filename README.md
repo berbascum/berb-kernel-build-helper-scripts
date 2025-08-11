@@ -1,1 +1,1 @@
-# Scripts to automate the Droidian kernel build execution
+# Helper scripts for the Droidian Linux kernel compilation

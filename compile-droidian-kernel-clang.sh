@@ -1,8 +1,9 @@
 #!/bin/bash
 
-## This script is only a launcher that automates some steps from the official Droidian porting guide.
+## This script is just a helper for the Droiddian kernel compilation.
+# releng-tools will be used.
 #
-# Guide URL: https://github.com/droidian/porting-guide/blob/master/kernel-compilation.md#kernel-adaptation
+# Porting guide: https://github.com/droidian/porting-guide/blob/master/kernel-compilation.md
 
 chmod +x /buildd/sources/debian/rules
 cd /buildd/sources

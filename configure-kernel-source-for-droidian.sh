@@ -69,8 +69,21 @@ subtree_initiator_dkpt_set_vars_logic() {
 
 bbl_integration() {
     ## Configure and download bbl-general-lib
-    bbl_general_version=1111
-    wget -O /tmp/bbl_general_lib_${bbl_general_version} https://raw.githubusercontent.com/berbascum/bbl-general-lib/refs/heads/berb-develop/pkg_rootfs/usr/lib/berb-bash-libs/bbl_general_lib_${bbl_general_version}
+    bbl_general_version="1111"
+    ## Download bbl-general from github
+    wget -O /tmp/bbl_general_lib_${bbl_general_version} https://raw.githubusercontent.com/berbascum/bbl-general-lib/refs/heads/berb-develop/bbl_general_lib-main.sh
+    if [ "$?" -ne "0" ]; then
+        echo "bbl-general download failed!"
+        exit 1
+    fi
+    ## Check expected/dloaded  bbl-general versions
+    version_dloaded=$(grep "TOOL_VERSION_INT=\"1111\"$" /tmp/bbl_general_lib_${bbl_general_version} | awk -F'"' '{print $2}')
+    version_expected="${bbl_general_version}"
+    ## bbl-general expected must be ame as dloaded
+    if [ "${version_expected}" != "${version_dloaded}" ]; then
+        echo "Wrong bbl-general version. Expected: ${version_expected} but downloaded ${version_dloaded}"
+        exit 1
+    fi
     ## Load only the log-level and required functions
     BBL_LOAD_STAGE="log-level"
     ## Log path vars

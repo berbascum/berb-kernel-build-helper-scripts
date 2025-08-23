@@ -51,9 +51,13 @@ subtree_initiator_dkpt_set_vars() {
     ## Set var script file name without extension
     ## Will be used by curl as base for pattern
     script_basename_subtree_init="subtree-init-droidian-kernel-packaging-template"
+
+    ## Dir where the subtree should be initiated
+    subtree_dkpt_dir="droidian-kernel-packaging"
+    subtree_dkpt_path="${subtree_dkpt_dir}"
 }
 
-subtree_initiator_dkpt_set_vars_logic() {
+subtree_initiator_shared_set_vars_logic() {
     ## Set var for curl search pattern (might be by other tools)
     script_name_subtree_init_search_pattern="^${script_basename_subtree_init}.*\.sh$"
 
@@ -202,21 +206,27 @@ subtree_initiator_script_search_dload() {
     curl_gh_file_dload
 }
 
-subtree_initiator_dkpt_exec() {
-    ## Load the subtree initiator repo configuration vars
-    subtree_initiator_dkpt_set_vars
+subtree_initiator_shared_exec() {
     ## Load the vars related to the repo config logic
-    subtree_initiator_dkpt_set_vars_logic
+    subtree_initiator_shared_set_vars_logic
     ## Check that all required binaries are avaliable
     check_bin_reqs
     ## Search and download the initiator script
     subtree_initiator_script_search_dload
 
-    ## Execute the subtree initiator script
+    ## Configure script permissions
     chmod +x ${dir_dload}/${script_name_subtree_init}
+    ## Execute the subtree initiator script
     echo; echo "Starting execution: ${script_name_subtree_init}"
-    export subtree_path="droidian-kernel-packaging"
     ${dir_dload}/${script_name_subtree_init} $@
+}
+
+subtree_initiator_dkpt_exec() {
+    ## Load the subtree initiator repo configuration vars
+    subtree_initiator_dkpt_set_vars
+    export subtree_path="${subtree_dkpt_path}"
+    ## Call the subtree initiator exec function
+    subtree_initiator_shared_exec $@
 }
 
 ## Load the bbl integration function

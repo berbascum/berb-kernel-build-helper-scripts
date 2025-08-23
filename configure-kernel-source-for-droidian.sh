@@ -41,30 +41,30 @@ TOOL_NAME="cks-droidian"
 
 script_consts_load() {
     ## Defauls to get the constants config script
-    script_consts_file="config-consts-subtree-initiators.sh"
-    script_consts_file_url="https://raw.githubusercontent.com/berbascum/droidian-kernel-build-helper-scripts/refs/heads/droidian/${script_consts_file}"
+    script_consts_file_name="config-consts-subtree-initiators.sh"
+    script_consts_file_url_base="https://raw.githubusercontent.com/berbascum/droidian-kernel-build-helper-scripts/refs/heads/droidian"
 
     ## Search for flags to override defaults
-    ## --script-consts-file
+    ## --script-consts-file-name
     FLAG_TYPE="value"
-    flag_name="script-consts-file"
+    flag_name="script-consts-file-name"
     fn_bbgl_check_args_search_flag $@
     [ -n "${FLAG_FOUND_VALUE}" ] \
-        && script_consts_file="${FLAG_FOUND_VALUE}"
-    ## --script-consts-file-url
- FLAG_TYPE="value"
-    flag_name="script-consts-file-url"
+        && script_consts_file_name="${FLAG_FOUND_VALUE}"
+    ## --script-consts-file-url-base
+    FLAG_TYPE="value"
+    flag_name="script-consts-file-url-base"
     fn_bbgl_check_args_search_flag $@
     [ -n "${FLAG_FOUND_VALUE}" ] \
         && script_consts_file_url="${FLAG_FOUND_VALUE}"
-    debug "Script consts file: ${script_consts_file}"
-    debug "Script consts url: ${script_consts_file_url}"
+    debug "Script consts file name: ${script_consts_file_name}"
+    debug "Script consts url base: ${script_consts_file_url_base}"
     ## Download the constants config script
-    if [ ! -f "${script_consts_file}" ]; then
-        wget ${script_consts_file_url}/${script_consts_file} || echo "Download ${script_consts_file} failed!"; exit 1
+    if [ ! -f "${script_consts_file_name}" ]; then
+        wget ${script_consts_file_url_base}/${script_consts_file_name} || error "Download ${script_consts_file_name} failed!"
     fi
     ## Source the constants config script
-    . ${script_consts_file}
+    . ${script_consts_file_name}
 }
 
 subtree_initiator_shared_set_vars_logic() {
@@ -119,17 +119,20 @@ help_quick() {
 }
 
 help_script_args() {
-    ## Help for --script-consts-file flag
-    echo "* --script-consts-file=<value>"
+    ## Help for --script-consts-file-name flag
+    echo "* --script-consts-file-name=<value>"
     echo "    Overrides the default script"
     echo "    name to use to configure the"
     echo "    main script consts"
     echo
-    ## Help for --script-consts-file-url flag
-    echo "* --script-consts-file-url=<value>"
+    ## Help for --script-consts-file-url-base flag
+    echo "* --script-consts-file-url-base=<value>"
     echo "    Overrides the default url for"
     echo "    downloading the script used to"
     echo "    configure the main script consts"
+    echo "  Format:"
+    echo "  https://raw.githubusercontent.com/"
+    echo "  <USER>/<REPO_NAME>/refs/heads/<BRANCH_NAME>"
 }
 
 check_dir_reqs() {

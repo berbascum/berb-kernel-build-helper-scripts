@@ -36,6 +36,8 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+TOOL_NAME="cks-droidian"
+
 subtree_initiator_dkpt_set_vars() {
     ## Subtree initiator repo name vars
     ## dkpt: droidian-kernel-packaging-templates
@@ -72,13 +74,15 @@ bbl_integration() {
     ## Load only the log-level and required functions
     BBL_LOAD_STAGE="log-level"
     ## Log path vars
-    LOG_FULLPATH="${HOME}/logs"
+    LOG_FULLPATH="${HOME}/logs/${TOOL_NAME}"
     ## Load libs
     . /tmp/bbl_general_lib_${bbl_general_version}
-    ## Config log
-    fn_bbgl_config_log
     ## Config log level
+    FLAG_TYPE="value"
     fn_bbgl_config_log_level $@
+    ## Config log
+    FLAG_TYPE="empty"
+    fn_bbgl_config_log $@
 }
 
 check_arg() {

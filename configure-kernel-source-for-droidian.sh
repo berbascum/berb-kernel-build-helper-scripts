@@ -126,12 +126,15 @@ check_dir_reqs() {
     # Check if the current dir is a kernel source dir
     [ -f Kconfig -a -f Makefile -a -d kernel -a -d arch ] || abort "Not in a kernel source dir!"
 }
+export -f check_dir_reqs
+
 check_bin_reqs() {
     ## Required binaries
     which curl > /dev/null || abort "Please install the curl package"
     which git > /dev/null || abort "Please install the git package"
     which jq > /dev/null || abort "Please install the jq package"
 }
+export -f check_bin_reqs
 
 subtree_initiator_print_repo_vars() {
     ## Print repo vars

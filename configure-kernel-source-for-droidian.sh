@@ -46,19 +46,19 @@ subtree_initiator_dkpt_set_vars() {
 
     ## Git user/organization
     git_user_subtree_init="berbascum"
-    git_user_repo_dkpt="berbascum"
+    export git_user_repo_dkpt="berbascum"
     ## Repo names vars
     repo_name_subtree_init="droidian-kernel-build-helper-scripts"
-    repo_name_dkpt="droidian-kernel-packaging-templates"
+    export repo_name_dkpt="droidian-kernel-packaging-templates"
     ## Branch names vars
     repo_branch_subtree_init="subtree-init/droidian-kernel-packaging-templates"
-    repo_branch_name_dkpt="" ## Arg supplied
+    export repo_branch_name_dkpt="" ## Arg supplied
     ## Script file name without extension
     ## Will be used by curl as base for pattern
     script_basename_subtree_init="subtree-init-droidian-kernel-packaging-template"
     ## Dir where subtree will be initiated
-    subtree_dkpt_dir="droidian-kernel-packaging"
-    subtree_dkpt_path="${subtree_dkpt_dir}"
+    export subtree_dkpt_dir="droidian-kernel-packaging"
+    export subtree_dkpt_path="${subtree_dkpt_dir}"
 }
 
 subtree_initiator_shared_set_vars_logic() {

@@ -87,7 +87,10 @@ bbl_integration() {
     LOG_FULLPATH="${HOME}/logs/${TOOL_NAME}"
 
     ## Load required bbl-general function groups
-    . ${bbl_path}/${bbl_general_filenaame}
+    . ${bbl_path}/${bbl_general_filenaame} verbose
+    . ${bbl_path}/${bbl_general_filenaame} script-args
+    . ${bbl_path}/${bbl_general_filenaame} environment
+
     ## Config log level
     FLAG_TYPE="value"
     fn_bbgl_config_log_level $@

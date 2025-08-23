@@ -78,28 +78,16 @@ subtree_initiator_shared_set_vars_logic() {
 }
 
 bbl_integration() {
-    ## Configure and download bbl-general-lib
+    ## Configure bbl libs
+    bbl_path="/usr/lib/berb-bash-libs"
+    ## bbl-general
     bbl_general_version="1111"
-    ## Download bbl-general from github
-    wget -O /tmp/bbl_general_lib_${bbl_general_version} https://raw.githubusercontent.com/berbascum/bbl-general-lib/refs/heads/berb-develop/bbl_general_lib-main.sh
-    if [ "$?" -ne "0" ]; then
-        echo "bbl-general download failed!"
-        exit 1
-    fi
-    ## Check expected/dloaded  bbl-general versions
-    version_dloaded=$(grep "TOOL_VERSION_INT=\"1111\"$" /tmp/bbl_general_lib_${bbl_general_version} | awk -F'"' '{print $2}')
-    version_expected="${bbl_general_version}"
-    ## bbl-general expected must be ame as dloaded
-    if [ "${version_expected}" != "${version_dloaded}" ]; then
-        echo "Wrong bbl-general version. Expected: ${version_expected} but downloaded ${version_dloaded}"
-        exit 1
-    fi
-    ## Load only the log-level and required functions
-    BBL_LOAD_STAGE="log-level"
-    ## Log path vars
-    LOG_FULLPATH="${HOME}/logs/${TOOL_NAME}"
+    bbl_general_filenaame="bbl_general_lib_${bbl_general_version}"
     ## Load libs
-    . /tmp/bbl_general_lib_${bbl_general_version}
+    LOG_FULLPATH="${HOME}/logs/${TOOL_NAME}"
+
+    ## Load required bbl-general function groups
+    . ${bbl_path}/${bbl_general_filenaame}
     ## Config log level
     FLAG_TYPE="value"
     fn_bbgl_config_log_level $@
@@ -133,6 +121,7 @@ check_bin_reqs() {
     which curl > /dev/null || abort "Please install the curl package"
     which git > /dev/null || abort "Please install the git package"
     which jq > /dev/null || abort "Please install the jq package"
+    dpkg -l | grep "bbl-general-lib" > /dev/null  || abort "Please install the bbl-general-lib package"
 }
 export -f check_bin_reqs
 
@@ -225,8 +214,6 @@ export -f git_branch_exists
 subtree_initiator_shared_exec() {
     ## Load the vars related to the repo config logic
     subtree_initiator_shared_set_vars_logic
-    ## Check that all required binaries are avaliable
-    check_bin_reqs
     ## Search and download the initiator script
     subtree_initiator_script_search_dload
 
@@ -245,6 +232,8 @@ subtree_initiator_dkpt_exec() {
     subtree_initiator_shared_exec $@
 }
 
+## Check that all required binaries are avaliable
+check_bin_reqs
 ## Load the bbl integration function
 bbl_integration $@
 ## Check current dira requirements like git and kernel source

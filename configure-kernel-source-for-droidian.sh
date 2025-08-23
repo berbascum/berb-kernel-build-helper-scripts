@@ -38,14 +38,32 @@
 
 TOOL_NAME="cks-droidian"
 
+
 script_consts_load() {
-    ## Download the constants config script
+    ## Defauls to get the constants config script
     script_consts_file="config-consts-subtree-initiators.sh"
     script_consts_file_url="https://raw.githubusercontent.com/berbascum/droidian-kernel-build-helper-scripts/refs/heads/droidian/${script_consts_file}"
+
+    ## Search for flags to override defaults
+    ## --script-consts-file
+    FLAG_TYPE="value"
+    flag_name="script-consts-file"
+    fn_bbgl_check_args_search_flag $@
+    [ -n "${FLAG_FOUND_VALUE}" ] \
+        && script_consts_file="${FLAG_FOUND_VALUE}"
+    ## --script-consts-file-url
+ FLAG_TYPE="value"
+    flag_name="script-consts-file-url"
+    fn_bbgl_check_args_search_flag $@
+    [ -n "${FLAG_FOUND_VALUE}" ] \
+        && script_consts_file_url="${FLAG_FOUND_VALUE}"
+    debug "Script consts file: ${script_consts_file}"
+    debug "Script consts url: ${script_consts_file_url}"
+    ## Download the constants config script
     if [ ! -f "${script_consts_file}" ]; then
-        wget ${script_consts_file_url} || echo "Download ${script_consts_file} failed!"; exit 1
+        wget ${script_consts_file_url}/${script_consts_file} || echo "Download ${script_consts_file} failed!"; exit 1
     fi
-    ## source the config scrript
+    ## Source the constants config script
     . ${script_consts_file}
 }
 
@@ -96,6 +114,22 @@ help_quick() {
     fn_bbgl_help_log_level
     echo
     fn_bbgl_help_log_enable
+    echo
+    help_script_args
+}
+
+help_script_args() {
+    ## Help for --script-consts-file flag
+    echo "* --script-consts-file=<value>"
+    echo "    Overrides the default script"
+    echo "    name to use to configure the"
+    echo "    main script consts"
+    echo
+    ## Help for --script-consts-file-url flag
+    echo "* --script-consts-file-url=<value>"
+    echo "    Overrides the default url for"
+    echo "    downloading the script used to"
+    echo "    configure the main script consts"
 }
 
 check_dir_reqs() {

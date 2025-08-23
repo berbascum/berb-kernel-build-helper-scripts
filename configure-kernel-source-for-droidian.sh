@@ -105,14 +105,6 @@ bbl_integration() {
     fn_bbgl_help_check_flag $@
 }
 
-check_arg() {
-    for arg in $@; do
-        arg_found="$(echo "${arg}" | grep "\-\-${search_arg_str}" | awk -F'=' '{print $2}')"
-        [ -n "${arg_found}" ] && break
-    done
-}
-export -f check_arg
-
 help_quick() {
     echo; echo "Quick Help:"
     echo

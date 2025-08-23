@@ -178,6 +178,7 @@ git_protocols_def() {
     export repo_url_api="https://api.github.com/repos/${git_user}/${repo_name}/contents"
     export repo_url_raw="https://raw.githubusercontent.com/${git_user}/${repo_name}/refs/heads"
 }
+export -f git_protocols_def
 
 subtree_initiator_script_search_dload() {
     ## Search for the initiator script

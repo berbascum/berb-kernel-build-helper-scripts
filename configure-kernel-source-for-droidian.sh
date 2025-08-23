@@ -39,20 +39,24 @@
 TOOL_NAME="cks-droidian"
 
 subtree_initiator_dkpt_set_vars() {
-    ## Subtree initiator repo name vars
-    ## dkpt: droidian-kernel-packaging-templates
-    ## This function contains the editable vars
-    ## which will be the base for constructing the
-    ## urls for the git and curl operations
-    git_user_subtree_init="berbascum"
-    repo_name_subtree_init="droidian-kernel-build-helper-scripts"
-    repo_branch_subtree_init="subtree-init/droidian-kernel-packaging-templates"
+    ## dkpt: Subtree initiator repo name vars
+       ## droidian-kernel-packaging-templates
+    ## Vars may wanted to edit
+    ## for constructing git/curl urls
 
-    ## Set var script file name without extension
+    ## Git user/organization
+    git_user_subtree_init="berbascum"
+    git_user_repo_dkpt="berbascum"
+    ## Repo names vars
+    repo_name_subtree_init="droidian-kernel-build-helper-scripts"
+    repo_name_dkpt="droidian-kernel-packaging-templates"
+    ## Branch names vars
+    repo_branch_subtree_init="subtree-init/droidian-kernel-packaging-templates"
+    repo_branch_name_dkpt="" ## Arg supplied
+    ## Script file name without extension
     ## Will be used by curl as base for pattern
     script_basename_subtree_init="subtree-init-droidian-kernel-packaging-template"
-
-    ## Dir where the subtree should be initiated
+    ## Dir where subtree will be initiated
     subtree_dkpt_dir="droidian-kernel-packaging"
     subtree_dkpt_path="${subtree_dkpt_dir}"
 }

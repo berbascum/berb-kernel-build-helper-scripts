@@ -204,6 +204,21 @@ subtree_initiator_script_search_dload() {
     curl_gh_file_dload
 }
 
+git_branch_exists() {
+    ## Check if the specified branch exists
+    branch_found=$(git ls-remote --heads ${repo_url} | grep "/${repo_branch}$" | awk -F'/' '{print $NF}')
+    if [ -n "${branch_found}" ]; then
+        echo "Specified branch found on remote: \"${branch_found}\""
+    else
+        echo; echo "The specified branch \"${branch_arg}\" does not exist on the remote"
+        if [ "${repo_access}" != "public" ]; then
+            echo "Might be a pinentry fail. Set pinentry-[gnome3|qt] instead [tty|curses] in gpg-agent.conf"
+        fi
+        abort "Failure checking remote branch ${branch_arg}"
+    fi
+}
+export -f git_branch_exists
+
 subtree_initiator_shared_exec() {
     ## Load the vars related to the repo config logic
     subtree_initiator_shared_set_vars_logic

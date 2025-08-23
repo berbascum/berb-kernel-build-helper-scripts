@@ -180,7 +180,7 @@ subtree_initiator_dkpt_exec() {
     ${dir_dload}/${script_name_subtree_init} $@
 }
 
-## Check current dira requirements like git and kernel source
+## Check current dir requirements like git and kernel source
 check_dir_reqs
 ## Load the subtree initiatos function for dkpt
 subtree_initiator_dkpt_exec $@

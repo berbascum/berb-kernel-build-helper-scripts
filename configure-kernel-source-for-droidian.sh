@@ -65,10 +65,21 @@ subtree_initiator_dkpt_set_vars_logic() {
     repo_url_subtree_init_branch_raw="${repo_url_raw}/${repo_branch_subtree_init}"
 }
 
-abort() {
-    echo; echo "$(basename $0): $*"; exit 1
+bbl_integration() {
+    ## Configure and download bbl-general-lib
+    bbl_general_version=1111
+    wget -O /tmp/bbl_general_lib_${bbl_general_version} https://raw.githubusercontent.com/berbascum/bbl-general-lib/refs/heads/berb-develop/pkg_rootfs/usr/lib/berb-bash-libs/bbl_general_lib_${bbl_general_version}
+    ## Load only the log-level and required functions
+    BBL_LOAD_STAGE="log-level"
+    ## Log path vars
+    LOG_FULLPATH="${HOME}/logs"
+    ## Load libs
+    . /tmp/bbl_general_lib_${bbl_general_version}
+    ## Config log
+    fn_bbgl_config_log
+    ## Config log level
+    fn_bbgl_config_log_level $@
 }
-export -f abort
 
 check_arg() {
     for arg in $@; do
@@ -180,7 +191,9 @@ subtree_initiator_dkpt_exec() {
     ${dir_dload}/${script_name_subtree_init} $@
 }
 
-## Check current dir requirements like git and kernel source
+## Load the bbl integration function
+bbl_integration $@
+## Check current dira requirements like git and kernel source
 check_dir_reqs
 ## Load the subtree initiatos function for dkpt
 subtree_initiator_dkpt_exec $@

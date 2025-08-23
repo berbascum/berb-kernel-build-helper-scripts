@@ -83,6 +83,9 @@ bbl_integration() {
     ## Config log
     FLAG_TYPE="empty"
     fn_bbgl_config_log $@
+    ## Search for the --help$ flag in the arguments
+    FLAG_TYPE="empty"
+    fn_bbgl_help_check_flag $@
 }
 
 check_arg() {
@@ -92,6 +95,14 @@ check_arg() {
     done
 }
 export -f check_arg
+
+help_quick() {
+    echo; echo "Quick Help:"
+    echo
+    fn_bbgl_help_log_level
+    echo
+    fn_bbgl_help_log_enable
+}
 
 check_dir_reqs() {
     # Check if the current dir is a git repo

@@ -178,7 +178,7 @@ export -f curl_gh_file_dload
 
 git_protocols_def() {
     ## github protocols
-    export repo_url_proto='https://github.com/'
+    export repo_url_proto="https://github.com/${git_user}"
     export repo_url_api="https://api.github.com/repos/${git_user}/${repo_name}/contents"
     export repo_url_raw="https://raw.githubusercontent.com/${git_user}/${repo_name}/refs/heads"
 }

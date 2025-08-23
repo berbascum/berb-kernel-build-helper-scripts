@@ -69,7 +69,7 @@ bbl_integration() {
     ## Configure bbl libs
     bbl_path="/usr/lib/berb-bash-libs"
     ## bbl-general
-    bbl_general_version="1111"
+    bbl_general_version="1121"
     bbl_general_filenaame="bbl_general_lib_${bbl_general_version}"
     ## Load libs
     LOG_FULLPATH="${HOME}/logs/${TOOL_NAME}"

@@ -38,27 +38,15 @@
 
 TOOL_NAME="cks-droidian"
 
-subtree_initiator_dkpt_set_vars() {
-    ## dkpt: Subtree initiator repo name vars
-       ## droidian-kernel-packaging-templates
-    ## Vars may wanted to edit
-    ## for constructing git/curl urls
-
-    ## Git user/organization
-    git_user_subtree_init="berbascum"
-    export git_user_repo_dkpt="berbascum"
-    ## Repo names vars
-    repo_name_subtree_init="droidian-kernel-build-helper-scripts"
-    export repo_name_dkpt="droidian-kernel-packaging-templates"
-    ## Branch names vars
-    repo_branch_subtree_init="subtree-init/droidian-kernel-packaging-templates"
-    export repo_branch_name_dkpt="" ## Arg supplied
-    ## Script file name without extension
-    ## Will be used by curl as base for pattern
-    script_basename_subtree_init="subtree-init-droidian-kernel-packaging-template"
-    ## Dir where subtree will be initiated
-    export subtree_dkpt_dir="droidian-kernel-packaging"
-    export subtree_dkpt_path="${subtree_dkpt_dir}"
+script_consts_load() {
+    ## Download the constants config script
+    script_consts_file="config-consts-subtree-initiators.sh"
+    script_consts_file_url="https://raw.githubusercontent.com/berbascum/droidian-kernel-build-helper-scripts/refs/heads/droidian/${script_consts_file}"
+    if [ ! -f "${script_consts_file}" ]; then
+        wget ${script_consts_file_url} || echo "Download ${script_consts_file} failed!"; exit 1
+    fi
+    ## source the config scrript
+    . ${script_consts_file}
 }
 
 subtree_initiator_shared_set_vars_logic() {
@@ -239,7 +227,9 @@ subtree_initiator_dkpt_exec() {
 check_bin_reqs
 ## Load the bbl integration function
 bbl_integration $@
-## Check current dira requirements like git and kernel source
+## Load consts from the config script
+script_consts_load $@
+## Check current dir reqs like git and kernel source
 check_dir_reqs
 ## Load the subtree initiatos function for dkpt
 subtree_initiator_dkpt_exec $@

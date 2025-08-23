@@ -44,7 +44,7 @@ subtree_initiator_dkpt_set_vars() {
     ## This function contains the editable vars
     ## which will be the base for constructing the
     ## urls for the git and curl operations
-    git_user="berbascum"
+    git_user_subtree_init="berbascum"
     repo_name_subtree_init="droidian-kernel-build-helper-scripts"
     repo_branch_subtree_init="subtree-init/droidian-kernel-packaging-templates"
 
@@ -64,6 +64,8 @@ subtree_initiator_shared_set_vars_logic() {
     ## Define git urls basedd on protocol/service
     ## ssh/https raw/api
     ## Required by the below url vars
+    git_user="${git_user_subtree_init}"
+    repo_name="${repo_name_subtree_init}"
     git_protocols_def
 
     ## url vars for git and curl operations
@@ -120,7 +122,6 @@ check_dir_reqs() {
     # Check if the current dir is a kernel source dir
     [ -f Kconfig -a -f Makefile -a -d kernel -a -d arch ] || abort "Not in a kernel source dir!"
 }
-
 check_bin_reqs() {
     ## Required binaries
     which curl > /dev/null || abort "Please install the curl package"
@@ -174,8 +175,8 @@ export -f curl_gh_file_dload
 git_protocols_def() {
     ## github protocols
     export repo_url_proto='https://github.com/'
-    export repo_url_api="https://api.github.com/repos/${git_user}/${repo_name_subtree_init}/contents"
-    export repo_url_raw="https://raw.githubusercontent.com/${git_user}/${repo_name_subtree_init}/refs/heads"
+    export repo_url_api="https://api.github.com/repos/${git_user}/${repo_name}/contents"
+    export repo_url_raw="https://raw.githubusercontent.com/${git_user}/${repo_name}/refs/heads"
 }
 
 subtree_initiator_script_search_dload() {

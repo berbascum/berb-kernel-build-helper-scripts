@@ -2,7 +2,7 @@
 
 ## This script configures a Linux kernel source for Droidian.
 #
-# Version_0.0.3
+# Version_0.1.1
 #
 # Upstream-Name: droidian-kernel-build-helper-scripts
 # Source: https://github.com/berbascum/droidian-kernel-build-helper-scripts

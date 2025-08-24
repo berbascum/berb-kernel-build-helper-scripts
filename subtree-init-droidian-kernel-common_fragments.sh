@@ -2,7 +2,7 @@
 
 ## Script to initialize a kernel version branch from droidian common_fragments as subtree
 #
-# Version 0.0.1
+# Version_0.1.1
 #
 # Upstream-Name: droidian-kernel-build-helper-scripts
 # Source: https://github.com/berbascum/droidian-kernel-build-helper-scripts/tree/subtree-init/droidian-kernel-common_fragments

@@ -68,6 +68,31 @@ script_consts_load() {
 }
 
 subtree_initiator_shared_set_consts_logic() {
+    ## Set the required vars from loaded constants
+
+    ## git_user_subtree_init
+    varname="git_user_subtree_init_${subtree_name}"
+    git_user_subtree_init="${!varname}"
+    ## Repo names subtree init
+    varname="repo_name_subtree_init_${subtree_name}"
+    repo_name_subtree_init="${!varname}"
+    ## Branch names subtree init
+    varname="repo_branch_subtree_init_${subtree_name}"
+    repo_branch_subtree_init="${!varname}"
+    ## Script file name subtree init no extension
+    ## Will be used by curl as base for pattern
+    varname="script_basename_subtree_init_${subtree_name}"
+    script_basename_subtree_init="${!varname}"
+
+    ## Repository to download as subtree
+    export git_user_repo_${subtree_name}
+    export repo_name_${subtree_name}
+    # export repo_branch_name="" ## Arg supplied
+    export subtree_${subtree_name}_dir
+    export subtree_${subtree_name}_path
+    ## args for the git subtree command
+    export git_args_${subtree_name}
+
     ## Set var for curl search pattern (might be by other tools)
     script_name_subtree_init_search_pattern="^${script_basename_subtree_init}.*\.sh$"
 
@@ -256,25 +281,6 @@ subtree_initiator_shared_exec() {
 subtree_initiator_dkpt_exec() {
     ## Load subtree initiator repo config constants
     subtree_initiator_dkpt_set_consts
-
-    ## git_user_subtree_init
-    git_user_subtree_init="${git_user_subtree_init_dkpt}"
-    ## Repo names vars
-    repo_name_subtree_init="${repo_name_subtree_init_dkpt}"
-    ## Branch names vars
-    repo_branch_subtree_init="${repo_branch_subtree_init_dkpt}"
-    ## Script file name without extension
-    ## Will be used by curl as base for pattern
-    script_basename_subtree_init="${script_basename_subtree_init_dkpt}"
-
-    ## Repository to download as subtree
-    export git_user_repo_dkpt
-    export repo_name_dkpt
-    # export repo_branch_name="" ## Arg supplied
-    export subtree_dkpt_dir
-    export subtree_dkpt_path
-    ## args for the git subtree command
-    export git_args_dkpt
 
     ## Call the subtree initiator exec function
     subtree_initiator_shared_exec $@

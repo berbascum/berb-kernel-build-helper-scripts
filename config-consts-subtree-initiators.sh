@@ -5,8 +5,8 @@
 ## dkpt: Subtree initiator repo name consts
 ## droidian-kernel-packaging-templates
 subtree_initiator_dkpt_set_consts() {
-    initiator_name="dkpt"
-    info "Loading subtree initiator ${initiator_name} constants..."
+    subtree_name="dkpt"
+    info "Loading subtree initiator ${subtree_name} constants..."
     ## Git user/organization
     git_user_subtree_init_dkpt="berbascum"
     ## Repo names vars

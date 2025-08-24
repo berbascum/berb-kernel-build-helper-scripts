@@ -67,7 +67,7 @@ script_consts_load() {
     . ${script_consts_file_name}
 }
 
-subtree_initiator_shared_set_vars_logic() {
+subtree_initiator_shared_set_consts_logic() {
     ## Set var for curl search pattern (might be by other tools)
     script_name_subtree_init_search_pattern="^${script_basename_subtree_init}.*\.sh$"
 
@@ -240,8 +240,9 @@ git_branch_exists() {
 export -f git_branch_exists
 
 subtree_initiator_shared_exec() {
-    ## Load the vars related to the repo config logic
-    subtree_initiator_shared_set_vars_logic
+    ## Load the consts relate config logic
+    subtree_initiator_shared_set_consts_logic
+
     ## Search and download the initiator script
     subtree_initiator_script_search_dload
 
@@ -253,9 +254,28 @@ subtree_initiator_shared_exec() {
 }
 
 subtree_initiator_dkpt_exec() {
-    ## Load the subtree initiator repo configuration vars
-    subtree_initiator_dkpt_set_vars
-    export subtree_path="${subtree_dkpt_path}"
+    ## Load subtree initiator repo config constants
+    subtree_initiator_dkpt_set_consts
+
+    ## git_user_subtree_init
+    git_user_subtree_init="${git_user_subtree_init_dkpt}"
+    ## Repo names vars
+    repo_name_subtree_init="${repo_name_subtree_init_dkpt}"
+    ## Branch names vars
+    repo_branch_subtree_init="${repo_branch_subtree_init_dkpt}"
+    ## Script file name without extension
+    ## Will be used by curl as base for pattern
+    script_basename_subtree_init="${script_basename_subtree_init_dkpt}"
+
+    ## Repository to download as subtree
+    export git_user_repo_dkpt
+    export repo_name_dkpt
+    # export repo_branch_name="" ## Arg supplied
+    export subtree_dkpt_dir
+    export subtree_dkpt_path
+    ## args for the git subtree command
+    export git_args_dkpt
+
     ## Call the subtree initiator exec function
     subtree_initiator_shared_exec $@
 }

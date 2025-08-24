@@ -35,22 +35,38 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+## Local print functions for standalone mode
+if [ -z "${subtree_dkcf_path}" ]; then
+    error() {
+        echo "ERROR: $*"; exit 1
+    }
+
+    info() {
+        echo "INFO: $*"
+    }
+fi
+
 ## Set constants
-git_user="droidian-devices"
-repo_name="common_fragments"
+## Set git_user
+[ -n "${git_user_repo_dkcf}" ] && git_user="${git_user_repo_dkcf}" || git_user="droidian-devices"
+## Set repo_name
+[ -n "${repo_name_dkcf}" ] && repo_name="${repo_name_dkcf}" || repo_name="common_fragments"
+## Set subtree_dir
+[ -n "${subtree_dkcf_dir}" ] && subtree_dir="${subtree_dkcf_dir}" || subtree_dir="droidian/common_fragments"
+## Set subtree_path
+if [ -n "${subtree_dkcf_path}" ]; then
+    subtree_path="${subtree_dkcf_path}"
+else
+    subtree_path="${subtree_dir}"
+    ## Avoid continue if the droidian dir in the kernel source
+    ## root dir is a symlink and this script runs as standalone.
+    test -L droidian && error "The droidian dir in the kernel source root dir is a symlink. Aborting!"
+fi
+## Set git_args
+[ -n "${git_args_dkcf}" ] && git_args="${git_args_dkcf}" || git_args="--squash"
+
 repo_url="https://github.com/${git_user}/${repo_name}"
 remote_name="upstream-common_fragments"
-subtree_path="droidian/common_fragments"
-git_args="--squash"
-
-## Print stdout functions
-error() {
-    echo "ERROR: $*"; exit 1
-}
-
-info() {
-    echo "INFO: $*"
-}
 
 # Check if the current dir is a git repo
 [ -d ".git" ] || error "Not in a git repo!"
@@ -80,7 +96,7 @@ branch_found=$(git ls-remote --heads ${repo_url} | grep -E "${KERNEL_VERSION}-(a
 
 info  "branch_found = ${branch_found}"
 
-repo_branch="${branch_found}"
+repo_branch_name="${branch_found}"
 
 git remote add ${remote_name} ${repo_url}
-git subtree add --prefix=${subtree_path} ${remote_name} ${repo_branch} ${git_args} || abort "Subtree download failed!"
+git subtree add --prefix=${subtree_path} ${remote_name} ${repo_branch_name} ${git_args} || abort "Subtree download failed!"

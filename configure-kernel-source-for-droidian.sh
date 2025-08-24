@@ -286,6 +286,14 @@ subtree_initiator_dkpt_exec() {
     subtree_initiator_shared_exec $@
 }
 
+subtree_initiator_dkcf_exec() {
+    ## Load subtree initiator repo config constants
+    subtree_initiator_dkcf_set_consts
+
+    ## Call the subtree initiator exec function
+    subtree_initiator_shared_exec $@
+}
+
 ## Check that all required binaries are avaliable
 check_bin_reqs
 ## Load the bbl integration function
@@ -296,3 +304,5 @@ script_consts_load $@
 check_dir_reqs
 ## Load the subtree initiatos function for dkpt
 subtree_initiator_dkpt_exec $@
+## Load the subtree initiatos function for dkcf
+subtree_initiator_dkcf_exec $@

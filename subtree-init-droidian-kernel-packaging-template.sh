@@ -35,6 +35,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+## TODO: Some rewrites are required to use this scrip
+t as standalone.
+if [ -z "${subtree_dkpt_path}" ]; then
+    echo "This script must be called from the main configure-kernel-source-for-droidian.sh"
+    exit 1
+fi
+
 
 check_arg() {
     for arg in $@; do

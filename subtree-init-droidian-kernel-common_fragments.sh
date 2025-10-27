@@ -35,6 +35,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+## TODO: Some rewrites are required to use this script as standalone.
+if [ -z "${subtree_dkcf_path}" ]; then
+    echo "This script must be called from the main configure-kernel-source-for-droidian.sh"
+    exit 1
+fi
+
+
 ## Local print functions for standalone mode
 if [ -z "${subtree_dkcf_path}" ]; then
     error() {

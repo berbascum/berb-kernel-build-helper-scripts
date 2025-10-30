@@ -75,8 +75,8 @@ subtree_init_dkpt_exec() {
     ## Check for --template-branch-dkpt arg
     search_arg_str='template-branch-dkpt='
     check_arg $@
-    branch_arg="${arg_found}"
-    [ -n "${branch_arg}" ] || abort "Missing --${search_arg_str}<name> arg"
+    template_branch_dkpt="${arg_found}"
+    [ -n "${template_branch_dkpt}" ] || abort "Missing --${search_arg_str}<name> arg"
 
     ## Set url vars for ssh/https raw/api
     git_user="${git_user_repo_dkpt}"
@@ -95,7 +95,7 @@ subtree_init_dkpt_exec() {
     fi
 
     ## Check if the specified branch exists
-    repo_branch="${branch_arg}"
+    repo_branch_name="${template_branch_dkpt}"
     #repo_url= Defined above, after git_protocols_def
 
     git_branch_exists

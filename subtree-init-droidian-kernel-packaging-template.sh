@@ -129,6 +129,5 @@ if [ -d "${subtree_dkpt_path}" ]; then
     INFO "Dir ${subtree_dkpt_path} found. Skipping subtree_init_dkpt..."
 else
     check_bin_reqs
-    check_bin_reqs
     subtree_init_dkpt_exec $@
 fi

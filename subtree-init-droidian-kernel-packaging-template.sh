@@ -35,8 +35,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-## TODO: Some rewrites are required to use this scrip
-t as standalone.
+## TODO: Some rewrites are required to use this script as standalone.
 if [ -z "${subtree_dkpt_path}" ]; then
     echo "This script must be called from the main configure-kernel-source-for-droidian.sh"
     exit 1
@@ -67,8 +66,9 @@ subtree_init_dkpt_set_vars() {
         repo_branch_name_dkpt="" # Arg supplied, skipped
     ## Set the subtree git remote name
     git_remote_name="origin-Kpackaging"
+
     ## Initialize the git args
-    git_args=""
+    [ -n "${git_args_subtree_dload_dkpt}" ] && git_args="${git_args_dkpt}" || git_args=""
 }
 
 subtree_init_dkpt_exec() {

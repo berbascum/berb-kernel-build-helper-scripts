@@ -35,17 +35,15 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-repository_url="https://github.com/berbascum/droidian-kernel-build-helper-scripts"
-subtree_dir="scripts/build-kernel"
-remote_name="origin-Kcompile-helper"
-git_sub_args="--squash"
 
-## Check if the script is called from the main subtree script
-if [ -n "${subtree_main_path}" ]; then
-    subtree_path="${subtree_main_path}/${subtree_dir}"
-else
-    subtree_path="droidian/${subtree_dir}"
+## TODO: Some rewrites are required to use this script as standalone.
+if [ -z "${subtree_cdks_path}" ]; then
+    echo "This script must be called from the main configure-kernel-source-for-droidian.sh"
+    exit 1
 fi
+
+## TODO: upgrade to git_protocol
+repository_url="https://github.com/berbascum/droidian-kernel-build-helper-scripts"
 
 abort() {
     echo; echo "$(basename $0): $*"; exit 1
@@ -60,14 +58,74 @@ check_args() {
     done
 }
 
-repository_branch="helper/compile-droidian-kernel-scripts"
+subtree_init_cdks_set_vars() {
+    ## Git user/organization
+    [ -z "${git_user_repo_cdks}" ] && \
+        git_user_repo_cdks="berbascum"
+    ## Dir where subtree will be initiated
+    [ -z "${subtree_cdks_dir}" ] && \
+        subtree_cdks_dir="droidian/scripts/build-kernel"
+    [ -z "${subtree_cdks_path}" ] && \
+        subtree_cdks_path="${subtree_cdks_dir}"
+    ## Repo name vars
+    [ -z "${repo_name_cdks}" ] && \
+        repo_name_cdks="droidian-kernel-build-helper-scripts"
+    ## Branch name vars
+    [ -z "${repo_branch_name_cdks}" ] && \
+        repo_branch_name_cdks="helper/compile-droidian-kernel-scripts"
+    ## Set the subtree git remote name
+    git_remote_name="origin-Kcompile-helper"
 
-echo  "repository_branch = ${repository_branch}"
+    ## Initialize the git args
+    [ -n "${git_args_subtree_dload_cdks}" ] && git_args="${git_args_cdks}" || git_args="--squash"
+}
 
-git remote add ${remote_name} ${repository_url}
-git subtree add --prefix=${subtree_path} ${remote_name} ${repository_branch} ${git_sub_args}
+subtree_init_cdks_exec() {
+    ## Set url vars for ssh/https raw/api
+    git_user="${git_user_repo_cdks}"
+    repo_name="${repo_name_cdks}"
+    ## Returns repo_fslocal_proto|repo_url_proto
+    if [ "${repo_git_mode_subtree_cdks}" == "url" ]; then
+        ## Set the url var
+        repo_url="${repo_url_proto}/${repo_name}"
+        git_protocols_def
+        INFO "repo url defined = ${repo_url}"
+    elif [ "${repo_git_mode_subtree_cdks}" == "fs-local" ]; then
+        repo_fslocal_path="${repo_git_fslocal_path_subtree_cdks}"
+        git_protocols_def
+        INFO "repo fslocal path defined = ${repo_fslocal_path}"
+        INFO "repo fslocal (proto) defined = ${repo_fslocal_proto}"
+    fi
 
-## Add the subtree dir to the subtree-main .gitignorewhet required
+    ## Check if the specified branch exists
+    repo_branch_name="${repo_branch_name_cdks}"
+    #repo_url= Defined above, after git_protocols_def
+
+    git_branch_exists
+    info  "repo_branch_name = ${repo_branch_name}"
+
+
+    ## Add the repo as git remote
+    if [ "${repo_git_mode_subtree_cdks}" == "url" ]; then
+        git remote add -f ${git_remote_name} ${repo_url}
+    elif [ "${repo_git_mode_subtree_cdks}" == "fs-local" ]; then
+        git remote add -f ${git_remote_name} ${repo_fslocal_path}
+    fi
+
+    git subtree add --prefix=${subtree_cdks_path} ${git_remote_name} ${repo_branch_name} ${git_args} || abort "Subtree download failed!"
+}
+
+## Start subtree initialization if not done yet.
+subtree_init_cdks_set_vars
+if [ -d "${subtree_cdks_path}" ]; then
+    INFO "Dir ${subtree_cdks_path} found. Skipping subtree_init_cdks..."
+else
+    check_bin_reqs
+    subtree_init_cdks_exec $@
+fi
+
+
+## TODO: Add the subtree dir to the subtree-main .gitignorewhet required
 ## Don't commit the modified .gitignore, because should be untracked in the subtree-main repo.
 #if [ -n "${subtree_main_dir}" ]; then
 #    echo "Adding \"\" to .gitignore..."

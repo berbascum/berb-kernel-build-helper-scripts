@@ -107,9 +107,9 @@ subtree_init_cdks_exec() {
 
     ## Add the repo as git remote
     if [ "${repo_git_mode_subtree_cdks}" == "url" ]; then
-        git remote add -f ${git_remote_name} ${repo_url}
+        git remote add -f --no-tags ${git_remote_name} ${repo_url}
     elif [ "${repo_git_mode_subtree_cdks}" == "fs-local" ]; then
-        git remote add -f ${git_remote_name} ${repo_fslocal_path}
+        git remote add -f --no-tags ${git_remote_name} ${repo_fslocal_path}
     fi
 
     git subtree add --prefix=${subtree_cdks_path} ${git_remote_name} ${repo_branch_name} ${git_args} || abort "Subtree download failed!"

@@ -132,9 +132,9 @@ echo ""
 
     ## Add the repo as git remote
     if [ "${repo_git_mode_subtree_dkcf}" == "url" ]; then
-        git remote add -f ${git_remote_name} ${repo_url}
+        git remote add -f --no-tags ${git_remote_name} ${repo_url}
     elif [ "${repo_git_mode_subtree_dkcf}" == "fs-local" ]; then
-        git remote add -f ${git_remote_name} ${repo_fslocal_path}
+        git remote add -f --no-tags ${git_remote_name} ${repo_fslocal_path}
     fi
 
     debug "Command init subtree: git subtree add --prefix=\"${subtree_dkcf_path}\" \"${git_remote_name}\" \"${repo_branch_name}\" \"${git_args}\" || error "Subtree download failed!""

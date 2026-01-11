@@ -104,9 +104,9 @@ subtree_init_dkpt_exec() {
 
     ## Add the repo as git remote
     if [ "${repo_git_mode_subtree_dkpt}" == "url" ]; then
-        git remote add -f ${git_remote_name} ${repo_url}
+        git remote add -f --no-tags ${git_remote_name} ${repo_url}
     elif [ "${repo_git_mode_subtree_dkpt}" == "fs-local" ]; then
-        git remote add -f ${git_remote_name} ${repo_fslocal_path}
+        git remote add -f --no-tags ${git_remote_name} ${repo_fslocal_path}
     fi
 
     git subtree add --prefix=${subtree_dkpt_path} ${git_remote_name} ${template_branch_dkpt} ${git_args} || abort "Subtree download failed!"

@@ -42,15 +42,6 @@ if [ -z "${subtree_cdks_path}" ]; then
     exit 1
 fi
 
-## TODO: upgrade to git_protocol
-repository_url="https://github.com/berbascum/droidian-kernel-build-helper-scripts"
-
-abort() {
-    echo; echo "$(basename $0): $*"; exit 1
-}
-
-[ -d ".git" ] || abort "Not on a git repo"
-
 check_args() {
     for arg in $@; do
         arg_found="$(echo "${arg}" | grep "\-\-${search_arg_str}" | awk -F'=' '{print $2}')"
@@ -59,64 +50,69 @@ check_args() {
 }
 
 subtree_init_cdks_set_vars() {
-    ## Git user/organization
-    [ -z "${git_user_repo_cdks}" ] && \
-        git_user_repo_cdks="berbascum"
-    ## Dir where subtree will be initiated
-    [ -z "${subtree_cdks_dir}" ] && \
-        subtree_cdks_dir="droidian/scripts/build-kernel"
-    [ -z "${subtree_cdks_path}" ] && \
-        subtree_cdks_path="${subtree_cdks_dir}"
-    ## Repo name vars
-    [ -z "${repo_name_cdks}" ] && \
-        repo_name_cdks="droidian-kernel-build-helper-scripts"
-    ## Branch name vars
-    [ -z "${repo_branch_name_cdks}" ] && \
-        repo_branch_name_cdks="helper/compile-droidian-kernel-scripts"
     ## Set the subtree git remote name
     git_remote_name="origin-Kcompile-helper"
+    debug  "${FUNCNAME[0]}: ${subtree_name}: Defined git_remote_name = ${git_remote_name}"
 
-    ## Initialize the git args
-    [ -n "${git_args_subtree_dload_cdks}" ] && git_args="${git_args_cdks}" || git_args="--squash"
-}
-
-subtree_init_cdks_exec() {
     ## Set url vars for ssh/https raw/api
-    git_user="${git_user_repo_cdks}"
-    repo_name="${repo_name_cdks}"
-    ## Returns repo_fslocal_proto|repo_url_proto
-    if [ "${repo_git_mode_subtree_cdks}" == "url" ]; then
-        ## Set the url var
-        repo_url="${repo_url_proto}/${repo_name}"
+    repo_name="${repo_git_name_stuff}"
+    debug  "${FUNCNAME[0]}: ${subtree_name}: Defined repo_name = ${repo_name}"
+    git_args="${git_args_repo_subtree_stuff}"
+    debug  "${FUNCNAME[0]}: ${subtree_name}: Defined git_args = ${git_args}"
+
+    ## Conditional url vars protocols_def
+    if [ "${repo_git_mode_stuff}" == "url" ]; then
+        ## Set git user
+        git_user="${git_user_repo_stuff}"
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Defined git_user = ${git_user}"
+        ## Set repo url
         git_protocols_def
+        repo_url="${repo_url_proto}/${repo_name}"
         INFO "repo url defined = ${repo_url}"
-    elif [ "${repo_git_mode_subtree_cdks}" == "fs-local" ]; then
-        repo_fslocal_path="${repo_git_fslocal_path_subtree_cdks}"
+    ## Conditional fs-llocal vars protocols_def
+    elif [ "${repo_git_mode_stuff}" == "fs-local" ]; then
+        repo_fslocal_path="${repo_git_fslocal_path_subtree}"
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Defined repo_fslocal_path = ${repo_fslocal_path}"
+
         git_protocols_def
         INFO "repo fslocal path defined = ${repo_fslocal_path}"
         INFO "repo fslocal (proto) defined = ${repo_fslocal_proto}"
     fi
+}
 
-    ## Check if the specified branch exists
-    repo_branch_name="${repo_branch_name_cdks}"
+subtree_init_cdks_exec() {
+    # Check if the current dir is a git repo
+    [ -d ".git" ] || error "Not in a git repo!"
+    
+    # Check if the current dir is a kernel source dir
+    [ -f Kconfig -a -f Makefile -a -d kernel -a -d arch ] || error "Not in a kernel source dir!"
+
+    repo_branch_name="${repo_git_branch_stuff}"
     #repo_url= Defined above, after git_protocols_def
 
     git_branch_exists
-    info  "repo_branch_name = ${repo_branch_name}"
-
+    repo_branch_name="${branch_found}"
+    info  "repo_branch_name = \"${repo_branch_name}\""
+    
+    ## Check if exist a branch for the specified kernel version
+    [ -n "${branch_found}" ] || error "$(basename $0): The specified common_fragments branch \"${branch_found}\" does not exist"
 
     ## Add the repo as git remote
-    if [ "${repo_git_mode_subtree_cdks}" == "url" ]; then
+    if [ "${repo_git_mode_stuff}" == "url" ]; then
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Adding remote \"${git_remote_name}\" \"${repo_url}\""
         git remote add -f --no-tags ${git_remote_name} ${repo_url}
-    elif [ "${repo_git_mode_subtree_cdks}" == "fs-local" ]; then
+    elif [ "${repo_git_mode_stuff}" == "fs-local" ]; then
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Adding remote \"${git_remote_name}\" \"${repo_fslocal_path}\""
         git remote add -f --no-tags ${git_remote_name} ${repo_fslocal_path}
     fi
 
-    git subtree add --prefix=${subtree_cdks_path} ${git_remote_name} ${repo_branch_name} ${git_args} || abort "Subtree download failed!"
+    debug "Command init subtree: git subtree add --prefix=subtree_cdks_path=\"${subtree_cdks_path}\" git_remote_name=\"${git_remote_name}\" branch_found=\"${branch_found}\" git_args=\"${git_args}\""
+    git subtree add --prefix=${subtree_cdks_path} ${git_remote_name} ${repo_branch_name} ${git_args} || error "Subtree download failed!"
 }
 
 ## Start subtree initialization if not done yet.
 subtree_init_cdks_set_vars
+
 if [ -d "${subtree_cdks_path}" ]; then
     INFO "Dir ${subtree_cdks_path} found. Skipping subtree_init_cdks..."
 else

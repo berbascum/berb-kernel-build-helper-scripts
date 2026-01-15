@@ -50,6 +50,38 @@ check_arg() {
 }
 
 subtree_init_dkpt_set_vars() {
+    ## Set the subtree git remote name
+    git_remote_name="origin-Kpackaging"
+    debug  "${FUNCNAME[0]}: ${subtree_name}: Defined git_remote_name = ${git_remote_name}"
+
+    ## Set url vars for ssh/https raw/api
+    repo_name="${repo_git_name_stuff}"
+    debug  "${FUNCNAME[0]}: ${subtree_name}: Defined repo_name = ${repo_name}"
+    git_args="${git_args_repo_subtree_stuff}"
+    debug  "${FUNCNAME[0]}: ${subtree_name}: Defined git_args = ${git_args}"
+
+    ## Conditional url vars protocols_def
+    if [ "${repo_git_mode_stuff}" == "url" ]; then
+        ## Set git user
+        git_user="${git_user_repo_stuff}"
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Defined git_user = ${git_user}"
+        ## Set repo url
+        git_protocols_def
+        repo_url="${repo_url_proto}/${repo_name}"
+        INFO "repo url defined = ${repo_url}"
+    ## Conditional fs-llocal vars protocols_def
+    elif [ "${repo_git_mode_stuff}" == "fs-local" ]; then
+        repo_fslocal_path="${repo_git_fslocal_path_subtree}"
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Defined repo_fslocal_path = ${repo_fslocal_path}"
+
+        git_protocols_def
+        INFO "repo fslocal path defined = ${repo_fslocal_path}"
+        INFO "repo fslocal (proto) defined = ${repo_fslocal_proto}"
+    fi
+}
+
+fn_todo_script_mode_standalone() {
+    ## TODO: Reimplement the standalone mode
     ## Git user/organization
     [ -z "${git_user_repo_dkpt}" ] && \
         git_user_repo_dkpt="berbascum"
@@ -64,9 +96,6 @@ subtree_init_dkpt_set_vars() {
     ## Branch name vars
     [ -z "${repo_branch_name_dkpt}" ] && \
         repo_branch_name_dkpt="" # Arg supplied, skipped
-    ## Set the subtree git remote name
-    git_remote_name="origin-Kpackaging"
-
     ## Initialize the git args
     [ -n "${git_args_subtree_dload_dkpt}" ] && git_args="${git_args_dkpt}" || git_args=""
 }
@@ -78,22 +107,6 @@ subtree_init_dkpt_exec() {
     template_branch_dkpt="${arg_found}"
     [ -n "${template_branch_dkpt}" ] || abort "Missing --${search_arg_str}<name> arg"
 
-    ## Set url vars for ssh/https raw/api
-    git_user="${git_user_repo_dkpt}"
-    repo_name="${repo_name_dkpt}"
-    ## Returns repo_fslocal_proto|repo_url_proto
-    if [ "${repo_git_mode_subtree_dkpt}" == "url" ]; then
-        ## Set the url var
-        repo_url="${repo_url_proto}/${repo_name}"
-        git_protocols_def
-        INFO "repo url defined = ${repo_url}"
-    elif [ "${repo_git_mode_subtree_dkpt}" == "fs-local" ]; then
-        repo_fslocal_path="${repo_git_fslocal_path_subtree_dkpt}"
-        git_protocols_def
-        INFO "repo fslocal path defined = ${repo_fslocal_path}"
-        INFO "repo fslocal (proto) defined = ${repo_fslocal_proto}"
-    fi
-
     ## Check if the specified branch exists
     repo_branch_name="${template_branch_dkpt}"
     #repo_url= Defined above, after git_protocols_def
@@ -103,12 +116,15 @@ subtree_init_dkpt_exec() {
     info  "template_branch_dkpt = ${template_branch_dkpt}"
 
     ## Add the repo as git remote
-    if [ "${repo_git_mode_subtree_dkpt}" == "url" ]; then
+    if [ "${repo_git_mode_stuff}" == "url" ]; then
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Adding remote \"${git_remote_name}\" \"${repo_url}\""
         git remote add -f --no-tags ${git_remote_name} ${repo_url}
-    elif [ "${repo_git_mode_subtree_dkpt}" == "fs-local" ]; then
+    elif [ "${repo_git_mode_stuff}" == "fs-local" ]; then
+        debug  "${FUNCNAME[0]}: ${subtree_name}: Adding remote \"${git_remote_name}\" \"${repo_fslocal_path}\""
         git remote add -f --no-tags ${git_remote_name} ${repo_fslocal_path}
     fi
 
+    debug "Command init subtree: git subtree add --prefix=subtree_dkpt_path=\"${subtree_dkpt_path}\" git_remote_name=\"${git_remote_name}\" \"${branch_found}\" git_args=\"${git_args}\""
     git subtree add --prefix=${subtree_dkpt_path} ${git_remote_name} ${template_branch_dkpt} ${git_args} || abort "Subtree download failed!"
 
     ./${subtree_dkpt_path}/gitignore-kernel-droidian-patcher.sh
